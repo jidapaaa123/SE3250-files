@@ -17,7 +17,7 @@
 )
 
 ; supports comparison between 2 items: '='
-(define (is-true string)
+(define (is-true? string)
     ; ex:  (is-true '(= 2 2)) => #t
     ; condition = '(= 2 2) => string
     ; operation = '=' => (car string)
@@ -32,10 +32,12 @@
             (= operand1 operand2)
         )
     )
+)
 
 
-
-
+; niche issue: turn ''yes => 'yes
+(define (unwrap text)
+    (cadr text)
 )
 
 ; evaluates the quoted/string-ed "code"
@@ -53,21 +55,12 @@
                 (define condition (cadr string))
                 (define result_true (caddr string))
                 (define result_false (cadddr string))
-                (displayln '(I made it past definitions))
-                ; (displayln '(condition))
                 (cond
-                    ( (eq? #t condition)
-                        (begin
-                            (displayln '(I made it past evaluation: true))
-                            (displayln(result_true))
-                        )
+                    ( (is-true? condition)
+                        (unwrap result_true)
                     )
                     (  else
-                        (begin
-                            (displayln '(I made it past evaluation: false))
-                            (displayln(result_false))
-                        )
-                       
+                        (unwrap result_false)
                     )
                 
                 )
@@ -76,7 +69,8 @@
 )
 
 (if (= 2 2) 'yes 'no)
-(cadr '(if (= 2 2) 'yes 'no))
-(caddr '(if (= 2 2) 'yes 'no))
-(cadddr '(if (= 2 2) 'yes 'no))
+; (cadr '(if (= 2 2) 'yes 'no))
+; (caddr '(if (= 2 2) 'yes 'no))
+; (cadddr '(if (= 2 2) 'yes 'no))
 (eval '(if (= 2 2) 'yes 'no))
+(eval '(if (= 2 123) 'yes 'no))
