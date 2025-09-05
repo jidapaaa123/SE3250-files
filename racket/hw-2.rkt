@@ -93,22 +93,33 @@
 
             (cond
                 ; case 1: 0 parameter
+                ; ex:
+                    ; (define greet (lambda () (displayln 'Helloooo)))
+                    ; (greet 'hi) => "Hello!"
                 ( (empty? parameters)
                     (define (call name) 
-                        (if (eq? name 'hi)
-                            (displayln 'Hello!)
-                            (displayln 'Bye!)
+                        ( cond
+                            ( (eq? name 'hi)
+                                (displayln 'Hello!)
+                            )
                         )
                     )
 
                     call
-
-
                 )
                 ; case 2: 1 parameter
-                ; ( else
+                ; ex:
+                    ; (define echo (lambda (str) (displayln str)))
+                    ; (echo 'hi) => 'hi
+                ( else
+                    (define (call param) 
+                        ( 
+                            displayln param
+                        )
+                    )
 
-                ; )
+                    call
+                )
                 
             
             
@@ -120,5 +131,10 @@
 ; (if (= 2 2) 'yes 'no)
 ; (eval '(if (< 2 2) 'yes 'no))
 (define greet (eval '(lambda () (displayln 'Helloooo))))
-greet
 (greet 'hi)
+; (gret 'hi)
+
+(define echo (eval '(lambda (str) (displayln str))))
+(echo 'okkkk)
+(ech 'okkkk)
+
