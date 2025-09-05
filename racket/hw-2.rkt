@@ -95,21 +95,19 @@
     (cond
         ; BASIC CASES: displayln, display
         ( (is-displayln string)
-            (unwrap (cadr string))
+            (cadr string)
+            ; (unwrap (cadr string))
         )
         ( (is-quoted string) 
             (cadr string)
         )
         ( (is-fill-parameter string)
-            ; ex: (fill-parameter (displayln str) str okkkk)
+            ; ex: '(fill-parameter (displayln str) str okkkk)
             (define body (cadr string))
             (define param_name (caddr string))
             (define param_value (cadddr string))
             (define result (fill-parameter body param_name param_value))
-            (displayln 'here)
-            (displayln result)
-            (list? result)
-
+            (result)
         )
         ( (is-if string)
             ; determine if condition is true or false
@@ -153,7 +151,6 @@
                 ( else
                     (define (call param) 
                         (eval `(fill-parameter ,body ,(car parameters) ,param))
-                        ; (displayln (eval '(`(fill-parameter ,body ,(car parameters) ,param))))
                     )
 
                     call
@@ -166,6 +163,8 @@
 
 ; (if (= 2 2) 'yes 'no)
 ; (eval '(if (< 2 2) 'yes 'no))
+; (displayln '(hi hello how r u))
+; (eval '(displayln '(hi hello how r u)))
 ; (define greet (eval '(lambda () (displayln 'Helloooo))))
 ; (greet)
 
@@ -178,6 +177,4 @@
 
 (define echo (eval '(lambda (str) (displayln str))))
 (echo 'okkkk)
-
-
 
