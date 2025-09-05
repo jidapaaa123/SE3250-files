@@ -8,15 +8,19 @@
 (define (is-if string)
     ; returns true if first item of string is 'if
     (eq? 
-        ; (begin
-            (car string)
-            ; (display 'is )
-            ; (displayln (car string))
-        ; )
-         (quote if))
+        (car string)
+        (quote if))
 )
 
-; supports comparison between 2 items: '='
+(define (is-lambda string)
+    ; ex: '(lambda () (displayln 'Helloooo)) => #t
+    (eq?
+        (car string)
+        (quote lambda)
+    )
+)
+
+; supports comparison between 2 items: =, <, >, <=, >=, eq?
 (define (is-true? string)
     ; ex:  (is-true '(= 2 2)) => #t
     ; condition = '(= 2 2) => string
@@ -43,6 +47,9 @@
         ( (eq? operation '>=)
             (>= operand1 operand2)
         )
+        ( (eq? operation 'eq?)
+            (eq? operand1 operand2)
+        )
     )
 )
 
@@ -53,6 +60,7 @@
 )
 
 ; evaluates the quoted/string-ed "code"
+; current capabilities: quote, if, 
 (define (eval string)
     (cond
         ( (is-quoted string) 
@@ -74,15 +82,43 @@
                     (  else
                         (unwrap result_false)
                     )
-                
                 )
+        )
+        ( (is-lambda string)
+            ; ex: '(lambda () (displayln 'Helloooo))
+            ; parameters = '() = (cadr string)
+            ; method = '(displayln 'Helloooo) = (caddr string)
+            (define parameters (cadr string))
+            (define method (caddr string))
+
+            (cond
+                ; case 1: 0 parameter
+                ( (empty? parameters)
+                    (define (call name) 
+                        (if (eq? name 'hi)
+                            (displayln 'Hello!)
+                            (displayln 'Bye!)
+                        )
+                    )
+
+                    call
+
+
+                )
+                ; case 2: 1 parameter
+                ; ( else
+
+                ; )
+                
+            
+            
+            )
         )
     )
 )
 
-(if (= 2 2) 'yes 'no)
-; (cadr '(if (= 2 2) 'yes 'no))
-; (caddr '(if (= 2 2) 'yes 'no))
-; (cadddr '(if (= 2 2) 'yes 'no))
-(eval '(if (= 2 2) 'yes 'no))
-(eval '(if (= 2 123) 'yes 'no))
+; (if (= 2 2) 'yes 'no)
+; (eval '(if (< 2 2) 'yes 'no))
+(define greet (eval '(lambda () (displayln 'Helloooo))))
+greet
+(greet 'hi)
