@@ -10,6 +10,7 @@
     (eq? 
         (car string)
         (quote if))
+    
 )
 
 (define (is-lambda string)
@@ -68,6 +69,26 @@
     (cadr text)
 )
 
+(define (fill-parameter body param value)
+    (map 
+        (lambda (x)
+            (if (eq? x param)
+             value
+             x
+            )
+        )
+       body
+    )
+)
+
+(define (is-fill-parameter string)
+    (eq?
+        (car string)
+        (quote fill-parameter)
+    )
+)
+
+
 ; evaluates the quoted/string-ed "code"
 ; current capabilities: quote, if, 
 (define (eval string)
@@ -78,6 +99,17 @@
         )
         ( (is-quoted string) 
             (cadr string)
+        )
+        ( (is-fill-parameter string)
+            ; ex: (fill-parameter (displayln str) str okkkk)
+            (define body (cadr string))
+            (define param_name (caddr string))
+            (define param_value (cadddr string))
+            (define result (fill-parameter body param_name param_value))
+            (displayln 'here)
+            (displayln result)
+            (list? result)
+
         )
         ( (is-if string)
             ; determine if condition is true or false
@@ -100,53 +132,52 @@
         ( (is-lambda string)
             ; ex: '(lambda () (displayln 'Helloooo))
             ; parameters = '() = (cadr string)
-            ; method = '(displayln 'Helloooo) = (caddr string)
+            ; body = '(displayln 'Helloooo) = (caddr string)
             (define parameters (cadr string))
-            (define method (caddr string))
+            (define body (caddr string))
 
             (cond
                 ; case 1: 0 parameter
                 ; ex:
                     ; (define greet (lambda () (displayln 'Helloooo)))
-                    ; (greet 'hi) => "Hello!"
+                    ; (greet) => "Helloooo"
                 ( (empty? parameters)
-                    (define (call name) (eval method))
+                    (define (call) (eval body))
                     call
                 )
 
                 ; case 2: 1 parameter
                 ; ex:
                     ; (define echo (lambda (str) (displayln str)))
-                    ; (echo 'hi) => 'hi
+                    ; param_name = str => (car parameters)
                 ( else
                     (define (call param) 
-                        ( 
-                            displayln param
-                        )
+                        (eval `(fill-parameter ,body ,(car parameters) ,param))
+                        ; (displayln (eval '(`(fill-parameter ,body ,(car parameters) ,param))))
                     )
 
                     call
                 )
-                
-            
-            
-            )
+            ) 
         )
     )
 )
 
+
 ; (if (= 2 2) 'yes 'no)
 ; (eval '(if (< 2 2) 'yes 'no))
-(define greet (eval '(lambda () (displayln 'Helloooo))))
-(greet 'hi)
+; (define greet (eval '(lambda () (displayln 'Helloooo))))
+; (greet)
 
-(define bye (eval '(lambda () (displayln 'Byeee))))
-(bye 'hi)
+; (define bye (eval '(lambda () (displayln 'Byeee))))
+; (bye)
+; bye
 
-(define err (eval '(lambda () (display 'Byeee))))
-(err 'hi)
+; (define err (eval '(lambda () (display 'Byeee))))
+; (err 'hi)
 
-; (define echo (eval '(lambda (str) (displayln str))))
-; (echo 'okkkk)
+(define echo (eval '(lambda (str) (displayln str))))
+(echo 'okkkk)
+
 
 
