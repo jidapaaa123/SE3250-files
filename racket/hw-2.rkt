@@ -20,6 +20,15 @@
     )
 )
 
+(define (is-displayln string)
+    ; ex: '(displayln 'hi) => 'hi
+    (eq?
+        (car string)
+        (quote displayln)
+    )
+)
+
+
 ; supports comparison between 2 items: =, <, >, <=, >=, eq?
 (define (is-true? string)
     ; ex:  (is-true '(= 2 2)) => #t
@@ -63,6 +72,10 @@
 ; current capabilities: quote, if, 
 (define (eval string)
     (cond
+        ; BASIC CASES: displayln, display
+        ( (is-displayln string)
+            (unwrap (cadr string))
+        )
         ( (is-quoted string) 
             (cadr string)
         )
@@ -97,16 +110,10 @@
                     ; (define greet (lambda () (displayln 'Helloooo)))
                     ; (greet 'hi) => "Hello!"
                 ( (empty? parameters)
-                    (define (call name) 
-                        ( cond
-                            ( (eq? name 'hi)
-                                (displayln 'Hello!)
-                            )
-                        )
-                    )
-
+                    (define (call name) (eval method))
                     call
                 )
+
                 ; case 2: 1 parameter
                 ; ex:
                     ; (define echo (lambda (str) (displayln str)))
@@ -132,9 +139,14 @@
 ; (eval '(if (< 2 2) 'yes 'no))
 (define greet (eval '(lambda () (displayln 'Helloooo))))
 (greet 'hi)
-; (gret 'hi)
 
-(define echo (eval '(lambda (str) (displayln str))))
-(echo 'okkkk)
-(ech 'okkkk)
+(define bye (eval '(lambda () (displayln 'Byeee))))
+(bye 'hi)
+
+(define err (eval '(lambda () (display 'Byeee))))
+(err 'hi)
+
+; (define echo (eval '(lambda (str) (displayln str))))
+; (echo 'okkkk)
+
 
