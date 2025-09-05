@@ -16,6 +16,28 @@
          (quote if))
 )
 
+; supports comparison between 2 items: '='
+(define (is-true string)
+    ; ex:  (is-true '(= 2 2)) => #t
+    ; condition = '(= 2 2) => string
+    ; operation = '=' => (car string)
+    ; operand1 = '2' => (cadr string)
+    ; operand2 = '2' => (caddr string)
+    (define operation (car string))
+    (define operand1 (cadr string))
+    (define operand2 (caddr string))
+
+    (cond
+        ( (eq? operation '=)
+            (= operand1 operand2)
+        )
+    )
+
+
+
+
+)
+
 ; evaluates the quoted/string-ed "code"
 (define (eval string)
     (cond
