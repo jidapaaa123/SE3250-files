@@ -65,7 +65,7 @@
 
 
 ; niche issue: turn ''yes => 'yes
-(define (unwrap text)
+(define (unwrap text )
     (cadr text)
 )
 
@@ -96,7 +96,6 @@
         ; BASIC CASES: displayln, display
         ( (is-displayln string)
             (cadr string)
-            ; (unwrap (cadr string))
         )
         ( (is-quoted string) 
             (cadr string)
@@ -149,9 +148,7 @@
                     ; (define echo (lambda (str) (displayln str)))
                     ; param_name = str => (car parameters)
                 ( else
-                    (define (call param) 
-                        (eval `(fill-parameter ,body ,(car parameters) ,param))
-                    )
+                    (define (call param) (eval (fill-parameter body (car parameters) param)))
 
                     call
                 )
@@ -162,7 +159,7 @@
 
 
 ; (if (= 2 2) 'yes 'no)
-; (eval '(if (< 2 2) 'yes 'no))
+(eval '(if (< 2 2) 'yes 'no))
 ; (displayln '(hi hello how r u))
 ; (eval '(displayln '(hi hello how r u)))
 ; (define greet (eval '(lambda () (displayln 'Helloooo))))
@@ -178,3 +175,4 @@
 (define echo (eval '(lambda (str) (displayln str))))
 (echo 'okkkk)
 
+; (eval '(displayln okkkk)) 
