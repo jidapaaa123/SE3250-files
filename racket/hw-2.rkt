@@ -1,5 +1,6 @@
 #lang racket
 
+; PART 1
 (define (is-quoted string)
     ; returns true if first item of string is 'quote
     (eq? (car string) (quote quote))
@@ -90,10 +91,8 @@
 
 
 ; evaluates the quoted/string-ed "code"
-; current capabilities: quote, if, 
 (define (eval string)
     (cond
-        ; BASIC CASES: displayln, display
         ( (is-displayln string)
             (cadr string)
         )
@@ -157,22 +156,50 @@
     )
 )
 
-
-; (if (= 2 2) 'yes 'no)
+(eval '(quote (1 2 3 4 5)))
 (eval '(if (< 2 2) 'yes 'no))
-; (displayln '(hi hello how r u))
-; (eval '(displayln '(hi hello how r u)))
-; (define greet (eval '(lambda () (displayln 'Helloooo))))
-; (greet)
-
-; (define bye (eval '(lambda () (displayln 'Byeee))))
-; (bye)
-; bye
-
-; (define err (eval '(lambda () (display 'Byeee))))
-; (err 'hi)
 
 (define echo (eval '(lambda (str) (displayln str))))
 (echo 'okkkk)
 
-; (eval '(displayln okkkk)) 
+
+; PART 2
+
+; input: '(infix 5 + 3 * 2 - 10)
+; output: '(- (+ 5 (* 3 2)) 10)
+(define (transform expr)
+    (if (eq? (car expr) 'infix)
+        ; perform method
+        (begin
+            (define quote (cdr expr))
+        
+        
+        
+        
+        )
+        ; null
+        null   
+    )
+)
+
+
+
+; input: '(5 + 3 * 2 - 10)
+; output: [5, +, 3, *, 2, -, 10] but in racket list of pairs
+(define (array arr str)
+    (cond 
+        ( (empty? str) ; empty str
+            str
+        )
+        ( (empty? cdr) ; last item!
+            (append arr str)
+        )
+        ( else 
+            (define first `(,(car str)))
+            ; append to the array, call the new array 'arr1
+            (define arr1 (append arr first))
+            ; check the rest
+            (append arr1 (cdr str))
+        )
+    )
+)
