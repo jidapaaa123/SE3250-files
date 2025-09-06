@@ -156,50 +156,58 @@
     )
 )
 
-(eval '(quote (1 2 3 4 5)))
-(eval '(if (< 2 2) 'yes 'no))
+; (eval '(quote (1 2 3 4 5)))
+; (eval '(if (< 2 2) 'yes 'no))
 
-(define echo (eval '(lambda (str) (displayln str))))
-(echo 'okkkk)
+; (define echo (eval '(lambda (str) (displayln str))))
+; (echo 'okkkk)
 
 
 ; PART 2
 
+; replace * and / portions
+(define (replace-mul-div str)
+    (cond
+        [(null? (cdr str)) str] ; last item? => last item
+        [ (or (eq? (cadr str) '*) (eq? (cadr str) '/)) ; next item is * or /?
+            ; replace this operation
+            (define curr (list (cadr str) (car str) (caddr str)))
+            ; place this transformation @ beginning of list then operate on rest
+            (cons curr (cdddr str))
+        ]
+        [ else ; keep this item & append the transformed-rest to it
+            (cons (car str) (replace-mul-div (cdr str)))
+        ]
+    )
+)
+
+(define (replace-add-sub str)
+    (cond
+        ; if last item => last item
+        ; for some reason it'll be mad without the car???
+        [ (null? (cdr str)) (car str) ] 
+        
+        [ else
+            ; rearrange confirmed operation & operand1, then append the rest
+            (list (cadr str) (car str) (replace-add-sub (cddr str)))
+        ]
+    )
+)
+
 ; input: '(infix 5 + 3 * 2 - 10)
 ; output: '(- (+ 5 (* 3 2)) 10)
 (define (transform expr)
-    (if (eq? (car expr) 'infix)
-        ; perform method
-        (begin
+    (cond
+        ( (eq? (car expr) 'infix)
+            ; perform method
             (define quote (cdr expr))
-        
-        
-        
-        
+            (replace-add-sub (replace-mul-div quote))
         )
-        ; null
-        null   
-    )
-)
-
-
-
-; input: '(5 + 3 * 2 - 10)
-; output: [5, +, 3, *, 2, -, 10] but in racket list of pairs
-(define (array arr str)
-    (cond 
-        ( (empty? str) ; empty str
-            str
-        )
-        ( (empty? cdr) ; last item!
-            (append arr str)
-        )
-        ( else 
-            (define first `(,(car str)))
-            ; append to the array, call the new array 'arr1
-            (define arr1 (append arr first))
-            ; check the rest
-            (append arr1 (cdr str))
+        ( else
+            ; null
+            null     
         )
     )
 )
+
+(transform '(infix 5 + 3 * 2 - 10))
